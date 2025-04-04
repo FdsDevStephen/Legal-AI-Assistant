@@ -1,0 +1,16 @@
+.nav-link {
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.login-btn:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.signup-btn:hover {
+  background: #ffffff !important;
+}
