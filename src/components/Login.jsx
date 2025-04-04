@@ -33,29 +33,26 @@ const Login = () => {
       provider.setCustomParameters({ prompt: 'select_account' });
       const result = await signInWithPopup(auth, provider);
       
-      await signOut(auth);
-      
+      // Check if user exists in database
       const querySnapshot = await getDocs(
         query(collection(db, 'users'), 
-        where('email', '==', result.user.email),
-        where('authProvider', '==', 'google'))
+        where('email', '==', result.user.email))
       );
       
       if (querySnapshot.empty) {
         await signOut(auth);
-        setError('No account found. Redirecting to signup...');
+        setError('No account found. Please sign up first.');
         navigate('/signup');
         return;
       }
 
-      await signInWithPopup(auth, provider);
+      // User exists, proceed to chatbot
       navigate('/chatbot');
     } catch (err) {
       if (auth.currentUser) {
         await signOut(auth);
       }
-      setError('Login failed. Redirecting to signup...');
-      navigate('/signup');
+      setError('Login failed. Please try again.');
     }
   };
 
@@ -68,19 +65,23 @@ const Login = () => {
     }
 
     try {
-      const querySnapshot = await getDocs(query(collection(db, 'users'), where('email', '==', email)));
+      // First check if user exists
+      const querySnapshot = await getDocs(
+        query(collection(db, 'users'), 
+        where('email', '==', email))
+      );
       
       if (querySnapshot.empty) {
-        setError('No account found. Redirecting to signup...');
+        setError('No account found. Please sign up first.');
         navigate('/signup');
         return;
       }
 
+      // User exists, attempt login
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/chatbot');
     } catch (err) {
-      setError('Login failed. Redirecting to signup...');
-      navigate('/signup');
+      setError('Invalid email or password. Please try again.');
     }
   };
 
